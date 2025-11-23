@@ -1,0 +1,12 @@
+[
+  {
+    "id": "1",
+    "name": "Sample Brand",
+    "tagline": "Premium artisanal foods",
+    "description": "Our flagship brand offering premium, handcrafted food products made with locally sourced ingredients.",
+    "image": "https://images.unsplash.com/photo-1606787366850-de6330128bfc?w=800&h=600&fit=crop",
+    "website": "https://example.com",
+    "category": "Artisanal",
+    "featured": true
+  }
+]

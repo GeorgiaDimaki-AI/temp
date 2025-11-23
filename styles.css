@@ -20,25 +20,42 @@
     --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     --font-heading: 'Helvetica Neue', Arial, sans-serif;
 
-    /* Spacing scale */
-    --space-xs: 0.5rem;
-    --space-sm: 1rem;
-    --space-md: 1.5rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
-    --space-2xl: 4rem;
-    --space-3xl: 6rem;
+    /* Spacing scale - Inspired by Tender Food's refined spacing */
+    --space-xs: 0.5rem;     /* 8px */
+    --space-sm: 1rem;       /* 16px */
+    --space-md: 1.5rem;     /* 24px */
+    --space-lg: 2rem;       /* 32px */
+    --space-xl: 3rem;       /* 48px */
+    --space-2xl: 4rem;      /* 64px */
+    --space-3xl: 6rem;      /* 96px */
+    --space-4xl: 8rem;      /* 128px */
+
+    /* Grid system - Enhanced for complexity */
+    --grid-gap: 11px;
+    --grid-columns-mobile: 8;
+    --grid-columns-desktop: 24;
+    --grid-margin-mobile: 6vw;
+    --grid-margin-desktop: 4vw;
 
     /* Layout */
-    --container-max-width: 1280px;
+    --container-max-width: 1440px;
     --header-height: 80px;
 
-    /* Transitions */
+    /* Transitions - Matching Tender Food timing */
     --transition-fast: 150ms ease-in-out;
     --transition-base: 300ms ease-in-out;
-    --transition-slow: 500ms ease-in-out;
+    --transition-medium: 650ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 1000ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Animation delays */
+    --delay-base: 100ms;
+    --delay-stagger: 150ms;
 
     /* Z-index scale */
+    --z-background: -1;
+    --z-base: 1;
+    --z-elevated: 10;
+    --z-sticky: 100;
     --z-header: 1000;
     --z-modal: 2000;
     --z-skip-link: 3000;
@@ -157,12 +174,18 @@ p {
     top: 0;
     left: 0;
     right: 0;
-    background-color: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(10px);
+    background-color: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     height: var(--header-height);
     z-index: var(--z-header);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform var(--transition-base);
+    transition: transform var(--transition-medium), background-color var(--transition-base);
+}
+
+.site-header.scrolled {
+    background-color: rgba(10, 10, 10, 0.95);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
 .site-header.hidden {
@@ -378,6 +401,73 @@ p {
         transform: translateY(0);
     }
 }
+
+/* ================================
+   Advanced Animation System
+   ================================ */
+
+/* Fade animations */
+.preFade {
+    opacity: 0;
+    transition: opacity var(--transition-medium);
+}
+
+.preFade.animated {
+    opacity: 1;
+}
+
+/* Scale animations */
+.preScale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+.preScale.animated {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Slide animations */
+.preSlide {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+.preSlide.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.preSlideLeft {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+.preSlideLeft.animated {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.preSlideRight {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity var(--transition-medium), transform var(--transition-medium);
+}
+
+.preSlideRight.animated {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Stagger delays for sequential animations */
+.stagger-1 { transition-delay: calc(var(--delay-stagger) * 1); }
+.stagger-2 { transition-delay: calc(var(--delay-stagger) * 2); }
+.stagger-3 { transition-delay: calc(var(--delay-stagger) * 3); }
+.stagger-4 { transition-delay: calc(var(--delay-stagger) * 4); }
+.stagger-5 { transition-delay: calc(var(--delay-stagger) * 5); }
 
 .hero-subtitle {
     font-size: clamp(1.1rem, 2vw, 1.5rem);

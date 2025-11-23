@@ -96,7 +96,7 @@
     }
 
     // ================================
-    // Sticky Header with Hide on Scroll Down
+    // Enhanced Header with Scroll Effects
     // ================================
 
     const header = document.querySelector('.site-header');
@@ -106,11 +106,17 @@
     const handleScroll = debounce(() => {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
+        // Add 'scrolled' class for enhanced styling
+        if (scrollTop > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+
+        // Hide on scroll down, show on scroll up
         if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
-            // Scrolling down
             header.classList.add('hidden');
         } else {
-            // Scrolling up
             header.classList.remove('hidden');
         }
 
@@ -118,6 +124,30 @@
     }, 100);
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // ================================
+    // Scroll-Based Animations (Tender Food style)
+    // ================================
+
+    const animatedElements = document.querySelectorAll('.preFade, .preScale, .preSlide, .preSlideLeft, .preSlideRight');
+
+    const animationObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                // Only animate once
+                animationObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: '0px 0px -100px 0px', // Trigger slightly before element enters viewport
+        threshold: 0.1
+    });
+
+    animatedElements.forEach(el => {
+        animationObserver.observe(el);
+    });
 
     // ================================
     // Smooth Scrolling for Anchor Links

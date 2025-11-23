@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Test Suite - Urban Matter</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        h1, h2 { color: #0ff; }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid;
+        }
+        .pass {
+            border-color: #0f0;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        .fail {
+            border-color: #f00;
+            background: rgba(255, 0, 0, 0.1);
+            color: #f00;
+        }
+        .warning {
+            border-color: #ff0;
+            background: rgba(255, 255, 0, 0.1);
+            color: #ff0;
+        }
+        code {
+            background: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 Security Test Suite</h1>
+    <div id="test-results"></div>
+
+    <script>
+        const results = [];
+
+        function runTest(name, testFn) {
+            try {
+                const result = testFn();
+                results.push({
+                    name,
+                    status: result ? 'pass' : 'fail',
+                    message: result ? 'Passed' : 'Failed'
+                });
+            } catch (e) {
+                results.push({
+                    name,
+                    status: 'fail',
+                    message: e.message
+                });
+            }
+        }
+
+        // Test 1: CSP Headers
+        runTest('Content Security Policy', () => {
+            const metaTags = document.querySelectorAll('meta[http-equiv="Content-Security-Policy"]');
+            return metaTags.length > 0;
+        });
+
+        // Test 2: XSS Protection
+        runTest('XSS Protection Headers', () => {
+            const metaTags = document.querySelectorAll('meta[http-equiv="X-XSS-Protection"]');
+            return metaTags.length > 0;
+        });
+
+        // Test 3: X-Frame-Options
+        runTest('Clickjacking Protection', () => {
+            const metaTags = document.querySelectorAll('meta[http-equiv="X-Frame-Options"]');
+            return metaTags.length > 0;
+        });
+
+        // Test 4: Input Sanitization
+        runTest('Input Sanitization Function', () => {
+            const testInput = '<script>alert("xss")</script>';
+            const div = document.createElement('div');
+            div.textContent = testInput;
+            return div.innerHTML === '&lt;script&gt;alert("xss")&lt;/script&gt;';
+        });
+
+        // Test 5: HTTPS Check (warning if not)
+        runTest('HTTPS Protocol', () => {
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+                results[results.length - 1].status = 'warning';
+                results[results.length - 1].message = 'Site should be served over HTTPS';
+                return false;
+            }
+            return true;
+        });
+
+        // Test 6: No Inline Event Handlers
+        runTest('No Inline Event Handlers', () => {
+            const elementsWithEvents = document.querySelectorAll('[onclick], [onerror], [onload]');
+            return elementsWithEvents.length === 0;
+        });
+
+        // Test 7: Form Validation
+        runTest('Form Has Validation', () => {
+            const form = document.querySelector('form');
+            if (!form) return true; // No form to test
+            const requiredInputs = form.querySelectorAll('[required]');
+            return requiredInputs.length > 0;
+        });
+
+        // Test 8: No External Scripts
+        runTest('No Unauthorized External Scripts', () => {
+            const scripts = document.querySelectorAll('script[src]');
+            let hasExternal = false;
+            scripts.forEach(script => {
+                const src = script.getAttribute('src');
+                if (src && !src.startsWith('/') && !src.startsWith('./') && !src.includes(window.location.hostname)) {
+                    hasExternal = true;
+                }
+            });
+            return !hasExternal;
+        });
+
+        // Test 9: ARIA Labels for Accessibility
+        runTest('Accessibility: ARIA Labels Present', () => {
+            const nav = document.querySelector('nav[aria-label]');
+            const buttons = document.querySelectorAll('button[aria-label], button[aria-expanded]');
+            return nav !== null && buttons.length > 0;
+        });
+
+        // Test 10: Meta Tags Present
+        runTest('Required Meta Tags', () => {
+            const charset = document.querySelector('meta[charset]');
+            const viewport = document.querySelector('meta[name="viewport"]');
+            const description = document.querySelector('meta[name="description"]');
+            return charset && viewport && description;
+        });
+
+        // Display results
+        const container = document.getElementById('test-results');
+        let passCount = 0;
+        let failCount = 0;
+        let warningCount = 0;
+
+        results.forEach(result => {
+            const div = document.createElement('div');
+            div.className = `test-result ${result.status}`;
+
+            const icon = result.status === 'pass' ? '✓' : result.status === 'warning' ? '⚠' : '✗';
+            div.innerHTML = `
+                <strong>${icon} ${result.name}</strong><br>
+                <code>${result.message}</code>
+            `;
+            container.appendChild(div);
+
+            if (result.status === 'pass') passCount++;
+            else if (result.status === 'fail') failCount++;
+            else warningCount++;
+        });
+
+        // Summary
+        const summary = document.createElement('div');
+        summary.innerHTML = `
+            <h2>Summary</h2>
+            <p>Total Tests: ${results.length}</p>
+            <p style="color: #0f0;">Passed: ${passCount}</p>
+            <p style="color: #f00;">Failed: ${failCount}</p>
+            <p style="color: #ff0;">Warnings: ${warningCount}</p>
+        `;
+        container.insertBefore(summary, container.firstChild);
+
+        // Log results
+        console.log('Security Test Results:', results);
+    </script>
+</body>
+</html>

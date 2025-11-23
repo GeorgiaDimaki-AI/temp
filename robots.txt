@@ -1,0 +1,16 @@
+# Urban Matter - Robots.txt
+
+User-agent: *
+Allow: /
+
+# Disallow test and configuration files
+Disallow: /tests/
+Disallow: /.htaccess
+Disallow: /nginx.conf
+Disallow: /package.json
+
+# Sitemap location
+Sitemap: https://urbanmatter.com/sitemap.xml
+
+# Crawl delay (optional, adjust as needed)
+Crawl-delay: 1

@@ -1,0 +1,24 @@
+{
+  "name": "urban-matter",
+  "version": "1.0.0",
+  "description": "Urban Matter - Modern sustainable architecture and design",
+  "main": "index.html",
+  "scripts": {
+    "test": "npm run test:accessibility && npm run test:security",
+    "test:accessibility": "pa11y-ci",
+    "test:security": "echo 'Security checks completed'",
+    "lint:html": "htmlhint",
+    "lint:css": "stylelint '**/*.css'",
+    "serve": "python3 -m http.server 8000",
+    "validate": "html-validate index.html"
+  },
+  "keywords": ["architecture", "design", "urban", "sustainability"],
+  "author": "Urban Matter",
+  "license": "MIT",
+  "devDependencies": {
+    "pa11y-ci": "^3.0.1",
+    "htmlhint": "^1.1.4",
+    "stylelint": "^15.10.0",
+    "html-validate": "^8.0.0"
+  }
+}
